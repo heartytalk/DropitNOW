@@ -15,7 +15,7 @@
       background: #fff;
       border-radius: 18px;
       box-shadow: 0 4px 24px rgba(0,0,0,0.08);
-      min-height: 900px;
+      min-height: 700px;
       padding: 30px;
     }
     .cards {
@@ -33,14 +33,14 @@
       justify-content: center;
     }
     .card {
-      width: 60px; height: 60px;
+      width: 48px; height: 48px;
       background: #fff;
       border: 2px solid #3949ab;
       border-radius: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 2.5em;
+      font-size: 2em;
       font-weight: bold;
       color: #3949ab;
       cursor: grab;
@@ -68,7 +68,7 @@
     }
     .syllable-box {
       width: 120px;
-      height: 270px; /* 충분히 크게! */
+      height: 150px;
       position: relative;
       display: inline-block;
       margin: 0 4px;
@@ -134,7 +134,7 @@
       position: absolute;
       left: 0; right: 0; bottom: -45px;
       text-align: center;
-      font-size: 2.8em;
+      font-size: 2.2em;
       color: #2e7d32;
       font-weight: bold;
       height: 55px;
@@ -190,9 +190,9 @@
       .cards {flex-direction: row; min-width: unset; min-height: unset; margin: 0 auto 15px auto;}
       .game-area {align-items: stretch;}
       .word-area {justify-content: center;}
-      .syllable-box {width: 70px; height: 170px;}
+      .syllable-box {width: 70px; height: 90px;}
       .dropzone {width: 28px; height: 28px; font-size: 1.1em;}
-      .syllable-char {font-size: 1.5em; bottom: -28px; height: 30px;}
+      .syllable-char {font-size: 1.1em; bottom: -20px; height: 20px;}
     }
   </style>
 </head>
@@ -310,29 +310,29 @@
         let box = document.createElement('div');
         box.className = 'syllable-box';
         // 위치 계산
-        // 초성: 항상 왼쪽 위
-        let dzCho = createDropzone(cho, 'cho', box, {left: 8, top: 12});
+        // 초성: 항상 좌측 상단
+        let dzCho = createDropzone(cho, 'cho', box, {left: 12, top: 18});
         box.appendChild(dzCho);
         dropzones.push(dzCho);
         // 중성: 위치 계산
         let jungPos;
         if (verticalVowels.includes(jung)) {
           // 세로형: 초성 오른쪽
-          jungPos = {left: 62, top: 12};
+          jungPos = {left: 68, top: 18};
         } else if (horizontalVowels.includes(jung) || horizontalComplexVowels.includes(jung)) {
           // 가로형/복합: 초성 아래
-          jungPos = {left: 36, top: 82};
+          jungPos = {left: 40, top: 72};
         } else {
           // 나머지(복합 모음 등): 오른쪽
-          jungPos = {left: 62, top: 12};
+          jungPos = {left: 68, top: 18};
         }
         let dzJung = createDropzone(jung, 'jung', box, jungPos);
         box.appendChild(dzJung);
         dropzones.push(dzJung);
-        // 종성(아래)
+        // 종성(박스 하단 중앙)
         let dzJong = null;
         if (jong) {
-          dzJong = createDropzone(jong, 'jong', box, {left: 36, top: 222});
+          dzJong = createDropzone(jong, 'jong', box, {left: 40, top: 108});
           box.appendChild(dzJong);
           dropzones.push(dzJong);
         }

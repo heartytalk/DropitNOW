@@ -15,7 +15,7 @@
       background: #fff;
       border-radius: 18px;
       box-shadow: 0 4px 24px rgba(0,0,0,0.08);
-      min-height: 700px;
+      min-height: 800px;
       padding: 30px;
     }
     .cards {
@@ -68,7 +68,7 @@
     }
     .syllable-box {
       width: 120px;
-      height: 180px; /* 높이 충분히 확보! */
+      height: 230px; /* 충분히 크게! */
       position: relative;
       display: inline-block;
       margin: 0 4px;
@@ -190,7 +190,7 @@
       .cards {flex-direction: row; min-width: unset; min-height: unset; margin: 0 auto 15px auto;}
       .game-area {align-items: stretch;}
       .word-area {justify-content: center;}
-      .syllable-box {width: 70px; height: 110px;}
+      .syllable-box {width: 70px; height: 150px;}
       .dropzone {width: 28px; height: 28px; font-size: 1.1em;}
       .syllable-char {font-size: 1.5em; bottom: -28px; height: 30px;}
     }
@@ -321,7 +321,7 @@
           jungPos = {left: 62, top: 12};
         } else if (horizontalVowels.includes(jung) || horizontalComplexVowels.includes(jung)) {
           // 가로형/복합: 초성 아래
-          jungPos = {left: 36, top: 72};
+          jungPos = {left: 36, top: 82};
         } else {
           // 나머지(복합 모음 등): 오른쪽
           jungPos = {left: 62, top: 12};
@@ -332,7 +332,7 @@
         // 종성(아래)
         let dzJong = null;
         if (jong) {
-          dzJong = createDropzone(jong, 'jong', box, {left: 36, top: 122});
+          dzJong = createDropzone(jong, 'jong', box, {left: 36, top: 172});
           box.appendChild(dzJong);
           dropzones.push(dzJong);
         }

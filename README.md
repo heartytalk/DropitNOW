@@ -1,7 +1,8 @@
+<!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>요즘 인기 아동 이름 한글 카드 퀴즈</title>
+  <title>한글 자음·모음 카드 언어치료 게임</title>
   <style>
     body { font-family: 'Malgun Gothic', '맑은 고딕', sans-serif; background: #f6f8fc; margin: 0; padding: 0;}
     .container { display: flex; max-width: 1100px; margin: 40px auto; background: #fff; border-radius: 18px; box-shadow: 0 4px 24px rgba(0,0,0,0.08); min-height: 700px; padding: 30px;}
@@ -10,8 +11,12 @@
     .card:active { transform: scale(1.08);}
     .game-area { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-start;}
     .word-area { margin-top: 40px; margin-bottom: 30px; display: flex; align-items: flex-end; gap: 24px; flex-wrap: wrap; justify-content: center;}
-    .syllable-box { width: 120px; height: 120px; position: relative; display: inline-block; margin: 0 4px; background: #f8f9fa; border-radius: 12px;}
+    .syllable-box { width: 120px; height: 150px; position: relative; display: inline-block; margin: 0 4px; background: #f8f9fa; border-radius: 12px;}
     .dropzone { position: absolute; background: #f0f4ff; border: 2px dashed #b0bec5; border-radius: 8px; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; font-size: 2em; transition: border-color 0.2s, background 0.2s; z-index: 2; box-sizing: border-box;}
+    .dropzone.cho { left: 12px; top: 18px; }
+    .dropzone.jung { left: 68px; top: 18px; }
+    .dropzone.jung.horizontal { left: 36px; top: 72px; }
+    .dropzone.jong { left: 36px; top: 108px; }
     .dropzone.correct { border-color: #43a047; background: #e8f5e9; animation: correctPop 0.4s;}
     @keyframes correctPop { 0% { transform: scale(1);} 60% { transform: scale(1.18);} 100% { transform: scale(1);}}
     .dropzone.wrong { border-color: #e53935; background: #ffebee; animation: shake 0.4s;}
@@ -30,7 +35,11 @@
       .cards {flex-direction: row; min-width: unset; min-height: unset; margin: 0 auto 15px auto;}
       .game-area {align-items: stretch;}
       .word-area {justify-content: center;}
-      .syllable-box {width: 70px; height: 70px;}
+      .syllable-box {width: 70px; height: 90px;}
+      .dropzone.cho { left: 6px; top: 10px; }
+      .dropzone.jung { left: 34px; top: 10px; }
+      .dropzone.jung.horizontal { left: 18px; top: 40px; }
+      .dropzone.jong { left: 18px; top: 60px; }
       .dropzone {width: 28px; height: 28px; font-size: 1.1em;}
       .syllable-char {font-size: 1.1em; bottom: -20px; height: 20px;}
     }
@@ -43,7 +52,7 @@
       <div id="score"></div>
       <div id="message"></div>
       <div class="word-area" id="word-area"></div>
-      <button class="next-btn" id="next-btn" style="display:none;">다음 이름</button>
+      <button class="next-btn" id="next-btn" style="display:none;">다음 문제</button>
     </div>
   </div>
   <audio id="successSound" src="https://cdn.pixabay.com/audio/2022/03/15/audio_115b9f6e2c.mp3"></audio>
@@ -52,11 +61,11 @@
     const consonants = ['ㄱ','ㄴ','ㄷ','ㄹ','ㅁ','ㅂ','ㅅ','ㅇ','ㅈ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
     const vowels = ['ㅏ','ㅑ','ㅓ','ㅕ','ㅗ','ㅛ','ㅜ','ㅠ','ㅡ','ㅣ'];
 
-    // 2024~2025년 인기, 받침 없는 아동 이름 (남녀 혼합)
-    const quizNames = [
-      "이준","서아","하린","지우","서윤","하윤","도윤","시우","아린","지안",
-      "수아","유나","채아","리아","도아","서하","나은","지아","아윤","시아",
-      "채이","윤슬","윤서","유주","예나","하은","예린"
+    // 예시: 인기 아동 이름 + 종성 있는 단어도 포함
+    const quizWords = [
+      "찬빈","지우","서윤","하윤","도윤","시우","아린","지안","수아","유나","채아",
+      "리아","도아","서하","나은","지아","아윤","시아","채이","윤슬","윤서","유주",
+      "예나","하은","예린","귤","값","밥","밤","솜","곰","공","강","길","솔"
     ];
 
     // 세로형 모음(중성 오른쪽)
@@ -66,7 +75,7 @@
     // 복합 모음 중 가로형(중성 아래)
     const horizontalComplexVowels = ['ㅘ','ㅙ','ㅚ','ㅝ','ㅞ','ㅟ','ㅢ'];
 
-    let quizWords = [];
+    let selectedWords = [];
     let currentIndex = 0;
     let score = 0;
 
@@ -80,7 +89,7 @@
       const JUNG = ["ㅏ","ㅐ","ㅑ","ㅒ","ㅓ","ㅔ","ㅕ","ㅖ","ㅗ","ㅘ","ㅙ","ㅚ","ㅛ","ㅜ","ㅝ","ㅞ","ㅟ","ㅠ","ㅡ","ㅢ","ㅣ"];
       const JONG = ["","ㄱ","ㄲ","ㄳ","ㄴ","ㄵ","ㄶ","ㄷ","ㄹ","ㄺ","ㄻ","ㄼ","ㄽ","ㄾ","ㄿ","ㅀ","ㅁ","ㅂ","ㅄ","ㅅ","ㅆ","ㅇ","ㅈ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ"];
       const code = syllable.charCodeAt(0) - 0xAC00;
-      if (code < 0 || code > 11171) return [syllable, '', '']; // 한글이 아니면
+      if (code < 0 || code > 11171) return [syllable, '', ''];
       const cho = CHO[Math.floor(code/588)];
       const jung = JUNG[Math.floor((code%588)/28)];
       const jong = JONG[code%28];
@@ -104,7 +113,7 @@
     function renderCardsForCurrentWord() {
       const cardsDiv = document.getElementById('cards');
       cardsDiv.innerHTML = '';
-      let word = quizWords[currentIndex];
+      let word = selectedWords[currentIndex];
 
       // 1. 정답에 필요한 자음/모음 추출
       let answerSet = new Set();
@@ -112,7 +121,7 @@
         const [cho, jung, jong] = decomposeHangul(word[i]);
         answerSet.add(cho);
         answerSet.add(jung);
-        // 종성은 없는 이름만 출제하므로 추가하지 않음
+        if (jong) answerSet.add(jong);
       }
       // 2. 오답 후보 목록 만들기
       const allChars = [...consonants, ...vowels];
@@ -135,51 +144,41 @@
 
     // 단어 문제 렌더링
     let dropzones = [];
-    let answerArr = [];
     let filledArr = [];
-    let syllableBoxRefs = [];
 
     function renderWord() {
       const wordArea = document.getElementById('word-area');
       wordArea.innerHTML = '';
       dropzones = [];
-      answerArr = [];
       filledArr = [];
-      syllableBoxRefs = [];
-      let word = quizWords[currentIndex];
+      let word = selectedWords[currentIndex];
       for (let i = 0; i < word.length; i++) {
         const [cho, jung, jong] = decomposeHangul(word[i]);
-        // 종성이 없는 음절만 허용
-        if (jong) continue;
-        answerArr.push([cho, jung]);
-        // 한 글자(음절)마다 박스 생성
         let box = document.createElement('div');
         box.className = 'syllable-box';
-        // 초성: 항상 좌측 상단
+        // 초성
         let dzCho = createDropzone(cho, 'cho', box, {left: 12, top: 18});
         box.appendChild(dzCho);
         dropzones.push(dzCho);
-        // 중성: 위치 계산
-        let jungPos;
-        if (verticalVowels.includes(jung)) {
-          // 세로형: 초성 오른쪽
-          jungPos = {left: 68, top: 18};
-        } else if (horizontalVowels.includes(jung) || horizontalComplexVowels.includes(jung)) {
-          // 가로형/복합: 초성 아래
-          jungPos = {left: 40, top: 72};
-        } else {
-          // 나머지(복합 모음 등): 오른쪽
-          jungPos = {left: 68, top: 18};
-        }
-        let dzJung = createDropzone(jung, 'jung', box, jungPos);
+        // 중성
+        let jungClass = verticalVowels.includes(jung) ? 'jung' : 'jung horizontal';
+        let jungPos = verticalVowels.includes(jung)
+          ? {left: 68, top: 18}
+          : {left: 36, top: 72};
+        let dzJung = createDropzone(jung, jungClass, box, jungPos);
         box.appendChild(dzJung);
         dropzones.push(dzJung);
-        // 결과(완성 음절) 표시 영역
+        // 종성
+        if (jong) {
+          let dzJong = createDropzone(jong, 'jong', box, {left: 36, top: 108});
+          box.appendChild(dzJong);
+          dropzones.push(dzJong);
+        }
+        // 완성 음절 표시
         const syllableChar = document.createElement('div');
         syllableChar.className = 'syllable-char';
         syllableChar.textContent = '';
         box.appendChild(syllableChar);
-        syllableBoxRefs.push({ box, dzCho, dzJung, syllableChar });
         wordArea.appendChild(box);
       }
       filledArr = Array(dropzones.length).fill(false);
@@ -234,10 +233,11 @@
 
     function updateSyllableChar(box) {
       const cho = box.querySelector('.dropzone.cho')?.textContent || '';
-      const jung = box.querySelector('.dropzone.jung')?.textContent || '';
+      const jung = box.querySelector('.dropzone.jung')?.textContent || box.querySelector('.dropzone.jung.horizontal')?.textContent || '';
+      const jong = box.querySelector('.dropzone.jong')?.textContent || '';
       const syllableChar = box.querySelector('.syllable-char');
       if (cho && jung) {
-        syllableChar.textContent = combineHangul(cho, jung, '');
+        syllableChar.textContent = combineHangul(cho, jung, jong);
       }
     }
 
@@ -267,22 +267,22 @@
       msgTimeout = setTimeout(() => msgDiv.textContent = '', 1200);
     }
     function updateScore() {
-      document.getElementById('score').textContent = `문제 ${currentIndex+1} / ${quizWords.length}   |   점수: ${score}`;
+      document.getElementById('score').textContent = `문제 ${currentIndex+1} / ${selectedWords.length}   |   점수: ${score}`;
     }
     function checkAllCorrect() {
       if (filledArr.every(f => f)) {
         score++;
-        showMessage('PASS! 다음 이름으로 넘어갑니다.');
+        showMessage('PASS! 다음 문제로 넘어갑니다.');
         document.getElementById('next-btn').style.display = 'inline-block';
-        if (currentIndex === quizWords.length-1) {
+        if (currentIndex === selectedWords.length-1) {
           document.getElementById('next-btn').textContent = '게임 종료';
         } else {
-          document.getElementById('next-btn').textContent = '다음 이름';
+          document.getElementById('next-btn').textContent = '다음 문제';
         }
       }
     }
     function nextWord() {
-      if (currentIndex < quizWords.length-1) {
+      if (currentIndex < selectedWords.length-1) {
         currentIndex++;
         renderWord();
       } else {
@@ -292,19 +292,12 @@
     function finishGame() {
       document.getElementById('word-area').innerHTML = '';
       document.getElementById('cards').innerHTML = '';
-      document.getElementById('message').innerHTML = `<span style="color:#43a047;">모든 이름을 완료했습니다!<br>최종 점수: ${score} / ${quizWords.length}</span>`;
+      document.getElementById('message').innerHTML = `<span style="color:#43a047;">모든 문제를 완료했습니다!<br>최종 점수: ${score} / ${selectedWords.length}</span>`;
       document.getElementById('next-btn').style.display = 'none';
       document.getElementById('score').textContent = '';
     }
     function startGame() {
-      // 종성 없는 이름만 무작위 10개 선택
-      const candidates = quizNames.filter(name =>
-        [...name].every(syl => {
-          const [,,jong] = decomposeHangul(syl);
-          return !jong;
-        })
-      );
-      quizWords = shuffle(candidates).slice(0, 10);
+      selectedWords = shuffle(quizWords).slice(0, 10);
       currentIndex = 0;
       score = 0;
       renderWord();

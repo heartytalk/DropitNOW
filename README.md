@@ -89,10 +89,7 @@
       z-index: 2;
       box-sizing: border-box;
     }
-    /* 실제 한글 조합 위치 */
-    .dropzone.cho { left: 8px; top: 12px; }
-    .dropzone.jung { left: 62px; top: 12px; }
-    .dropzone.jong { left: 35px; top: 70px; }
+    /* 위치는 JS에서 동적으로 지정 */
     .dropzone.correct {
       border-color: #43a047;
       background: #e8f5e9;
@@ -195,9 +192,6 @@
       .word-area {justify-content: center;}
       .syllable-box {width: 70px; height: 70px;}
       .dropzone {width: 28px; height: 28px; font-size: 1.1em;}
-      .dropzone.cho { left: 4px; top: 4px;}
-      .dropzone.jung { left: 32px; top: 4px;}
-      .dropzone.jong { left: 18px; top: 36px;}
       .syllable-char {font-size: 1.5em; bottom: -28px; height: 30px;}
     }
   </style>
@@ -220,6 +214,13 @@
     const vowels = ['ㅏ','ㅑ','ㅓ','ㅕ','ㅗ','ㅛ','ㅜ','ㅠ','ㅡ','ㅣ'];
     // 과일 단어 리스트
     const fruits = ['사과','배','복숭아','포도','귤','바나나','키위','수박','참외','딸기','오렌지','자두','레몬','망고','파인애플','토마토','체리','블루베리','멜론','감'];
+
+    // 세로형 모음(중성 오른쪽)
+    const verticalVowels = ['ㅏ','ㅑ','ㅓ','ㅕ','ㅣ','ㅐ','ㅔ','ㅒ','ㅖ'];
+    // 가로형 모음(중성 아래)
+    const horizontalVowels = ['ㅗ','ㅛ','ㅜ','ㅠ','ㅡ'];
+    // 복합 모음 중 가로형(중성 아래)
+    const horizontalComplexVowels = ['ㅘ','ㅙ','ㅚ','ㅝ','ㅞ','ㅟ','ㅢ'];
 
     let quizWords = [];
     let currentIndex = 0;
@@ -308,18 +309,30 @@
         // 한 글자(음절)마다 박스 생성
         let box = document.createElement('div');
         box.className = 'syllable-box';
-        // 초성(왼쪽 위)
-        let dzCho = createDropzone(cho, 'cho', box);
+        // 위치 계산
+        // 초성: 항상 왼쪽 위
+        let dzCho = createDropzone(cho, 'cho', box, {left: 8, top: 12});
         box.appendChild(dzCho);
         dropzones.push(dzCho);
-        // 중성(오른쪽 위)
-        let dzJung = createDropzone(jung, 'jung', box);
+        // 중성: 위치 계산
+        let jungPos;
+        if (verticalVowels.includes(jung)) {
+          // 세로형: 초성 오른쪽
+          jungPos = {left: 62, top: 12};
+        } else if (horizontalVowels.includes(jung) || horizontalComplexVowels.includes(jung)) {
+          // 가로형/복합: 초성 아래
+          jungPos = {left: 24, top: 62};
+        } else {
+          // 나머지(복합 모음 등): 오른쪽
+          jungPos = {left: 62, top: 12};
+        }
+        let dzJung = createDropzone(jung, 'jung', box, jungPos);
         box.appendChild(dzJung);
         dropzones.push(dzJung);
         // 종성(아래)
         let dzJong = null;
         if (jong) {
-          dzJong = createDropzone(jong, 'jong', box);
+          dzJong = createDropzone(jong, 'jong', box, {left: 35, top: 70});
           box.appendChild(dzJong);
           dropzones.push(dzJong);
         }
@@ -337,9 +350,14 @@
       renderCardsForCurrentWord();
     }
 
-    function createDropzone(answer, type, box) {
+    function createDropzone(answer, type, box, pos) {
       const dz = document.createElement('div');
       dz.className = 'dropzone ' + type;
+      // 위치 지정
+      if (pos) {
+        dz.style.left = pos.left + 'px';
+        dz.style.top = pos.top + 'px';
+      }
       // 힌트(회색) 추가
       const hint = document.createElement('span');
       hint.className = 'hint';

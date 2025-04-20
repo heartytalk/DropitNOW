@@ -15,7 +15,7 @@
       background: #fff;
       border-radius: 18px;
       box-shadow: 0 4px 24px rgba(0,0,0,0.08);
-      min-height: 800px;
+      min-height: 900px;
       padding: 30px;
     }
     .cards {
@@ -68,7 +68,7 @@
     }
     .syllable-box {
       width: 120px;
-      height: 230px; /* 충분히 크게! */
+      height: 270px; /* 충분히 크게! */
       position: relative;
       display: inline-block;
       margin: 0 4px;
@@ -190,7 +190,7 @@
       .cards {flex-direction: row; min-width: unset; min-height: unset; margin: 0 auto 15px auto;}
       .game-area {align-items: stretch;}
       .word-area {justify-content: center;}
-      .syllable-box {width: 70px; height: 150px;}
+      .syllable-box {width: 70px; height: 170px;}
       .dropzone {width: 28px; height: 28px; font-size: 1.1em;}
       .syllable-char {font-size: 1.5em; bottom: -28px; height: 30px;}
     }
@@ -332,7 +332,7 @@
         // 종성(아래)
         let dzJong = null;
         if (jong) {
-          dzJong = createDropzone(jong, 'jong', box, {left: 36, top: 172});
+          dzJong = createDropzone(jong, 'jong', box, {left: 36, top: 222});
           box.appendChild(dzJong);
           dropzones.push(dzJong);
         }

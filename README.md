@@ -10,16 +10,16 @@
     }
     .container {
       display: flex;
-      max-width: 1000px;
+      max-width: 1100px;
       margin: 40px auto;
       background: #fff;
       border-radius: 18px;
       box-shadow: 0 4px 24px rgba(0,0,0,0.08);
-      min-height: 600px;
+      min-height: 700px;
       padding: 30px;
     }
     .cards {
-      width: 180px;
+      width: 200px;
       background: #e8eaf6;
       border-radius: 12px;
       padding: 18px 8px;
@@ -28,8 +28,8 @@
       gap: 10px;
       align-content: flex-start;
       margin-right: 32px;
-      min-width: 180px;
-      min-height: 420px;
+      min-width: 200px;
+      min-height: 520px;
       justify-content: center;
     }
     .card {
@@ -62,13 +62,13 @@
       margin-bottom: 30px;
       display: flex;
       align-items: flex-end;
-      gap: 18px;
+      gap: 24px;
       flex-wrap: wrap;
       justify-content: center;
     }
     .syllable-box {
       width: 120px;
-      height: 120px;
+      height: 180px; /* 높이 충분히 확보! */
       position: relative;
       display: inline-block;
       margin: 0 4px;
@@ -190,7 +190,7 @@
       .cards {flex-direction: row; min-width: unset; min-height: unset; margin: 0 auto 15px auto;}
       .game-area {align-items: stretch;}
       .word-area {justify-content: center;}
-      .syllable-box {width: 70px; height: 70px;}
+      .syllable-box {width: 70px; height: 110px;}
       .dropzone {width: 28px; height: 28px; font-size: 1.1em;}
       .syllable-char {font-size: 1.5em; bottom: -28px; height: 30px;}
     }
@@ -321,7 +321,7 @@
           jungPos = {left: 62, top: 12};
         } else if (horizontalVowels.includes(jung) || horizontalComplexVowels.includes(jung)) {
           // 가로형/복합: 초성 아래
-          jungPos = {left: 24, top: 62};
+          jungPos = {left: 36, top: 72};
         } else {
           // 나머지(복합 모음 등): 오른쪽
           jungPos = {left: 62, top: 12};
@@ -332,7 +332,7 @@
         // 종성(아래)
         let dzJong = null;
         if (jong) {
-          dzJong = createDropzone(jong, 'jong', box, {left: 35, top: 70});
+          dzJong = createDropzone(jong, 'jong', box, {left: 36, top: 122});
           box.appendChild(dzJong);
           dropzones.push(dzJong);
         }
